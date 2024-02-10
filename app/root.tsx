@@ -1,18 +1,23 @@
-import type { LinksFunction } from '@remix-run/node';
+import type { LinksFunction, LoaderFunction } from '@remix-run/node';
 import { Links, LiveReload, Meta, Outlet, Scripts, ScrollRestoration } from '@remix-run/react';
-import styleSheet from './tailwind.css';
+import { rootAuthLoader } from '@clerk/remix/ssr.server';
+
+import styleSheet from '~/styles/global.css';
+import { ClerkApp, ClerkErrorBoundary } from '@clerk/remix';
 
 export const links: LinksFunction = () => [
   ...(styleSheet ? [{ rel: 'stylesheet', href: styleSheet }] : []),
 ];
 
-export default function App() {
+export const loader: LoaderFunction = (args) => rootAuthLoader(args);
+export const ErrorBoundary = ClerkErrorBoundary();
+
+const App = () => {
   return (
     <html lang="en">
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link href="./output.css" rel="stylesheet" />
         <Meta />
         <Links />
       </head>
@@ -24,4 +29,7 @@ export default function App() {
       </body>
     </html>
   );
-}
+};
+
+// Wrap your app in ClerkApp(app)
+export default ClerkApp(App);
