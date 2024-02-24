@@ -1,6 +1,7 @@
+import { useAuth } from '@clerk/remix'
 import { getAuth } from '@clerk/remix/ssr.server'
 import { ActionFunction, LoaderFunction, MetaFunction, json, redirect } from '@remix-run/node'
-import { useActionData, useFetcher, useLoaderData } from '@remix-run/react'
+import { useFetcher, useLoaderData } from '@remix-run/react'
 import { useEffect, useRef } from 'react'
 import { Player } from '~/components/Player'
 import { VideoList } from '~/components/VideoList'
@@ -15,28 +16,37 @@ export const loader: LoaderFunction = async (args) => {
 	const { userId } = await getAuth(args)
 	if (!userId) return redirect('/sign-in')
 
-	const videos = await fetchVideos()
+	const videos = await fetchVideos(userId)
 	return videos
 }
 
 export const action: ActionFunction = async ({ request }) => {
 	const formData = await request.formData()
 	const videoUrl = formData.get('videoUrl') as string
+	const userId = formData.get('userId') as string
 
-	if (!videoUrl) {
-		return json({ errors: { message: 'ERROR!' } }, { status: 400 })
+	if (!videoUrl || !userId) {
+		return json({ error: { message: 'エラーです' } })
 	}
 
-	await addVideo(videoUrl)
+	try {
+		await addVideo(userId, videoUrl)
+	} catch (e) {
+		return json({ error: { message: 'URLが不正またはデータベースに接続できませんでした' } })
+	}
 	return null
+}
+
+type FetcherData = {
+	error?: { message: string }
 }
 
 export default function Index() {
 	const videos = useLoaderData<typeof loader>() as Video[]
-	const actionData = useActionData<{ errors: { message: string } }>()
-	const fetcher = useFetcher()
+	const fetcher = useFetcher<FetcherData>()
 	const isAdding = fetcher.state !== 'idle'
 	const formRef = useRef<HTMLFormElement>(null)
+	const { userId } = useAuth()
 
 	useEffect(() => {
 		if (!isAdding) {
@@ -51,8 +61,9 @@ export default function Index() {
 				<fetcher.Form
 					ref={formRef}
 					method='post'
-					className='grid gap-5 w-full max-w-xl max-h-32 grid-cols-5 grid-rows-2'
+					className='grid gap-x-5 w-full max-w-xl max-h-32 grid-cols-5 grid-rows-2 place-items-center'
 				>
+					{userId && <input hidden readOnly name='userId' value={userId} />}
 					<input
 						name='videoUrl'
 						autoComplete='off'
@@ -67,9 +78,9 @@ export default function Index() {
 					>
 						Add
 					</button>
-					{actionData?.errors && (
+					{fetcher.data?.error && (
 						<div className='col-span-3'>
-							<span className='text-indigo-700'>{actionData?.errors.message}</span>
+							<span className='text-red-700'>{fetcher.data.error.message}</span>
 						</div>
 					)}
 				</fetcher.Form>

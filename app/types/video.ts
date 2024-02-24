@@ -1,5 +1,6 @@
 export type Video = {
-	id: number
+	id: string
+	userId: string
 	videoUrl: string
 	thumbnailUrl: string
 	createdAt: Date
