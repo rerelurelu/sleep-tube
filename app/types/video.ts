@@ -1,6 +1,7 @@
 export type Video = {
-  id: number;
-  videoUrl: string;
-  thumbnailUrl: string;
-  createdAt: Date;
-};
+	id: string
+	userId: string
+	videoUrl: string
+	thumbnailUrl: string
+	createdAt: Date
+}
