@@ -1,7 +1,7 @@
 import { useAtom } from 'jotai'
 import { FC } from 'react'
 import { selectedVideoUrl } from '~/atom/selectedVideoUrl'
-import { ThumbnailCard } from '~/components/thumbnailCard'
+import { ThumbnailCard } from '~/routes/playlist._index/components/ThumbnailCard'
 import { Video } from '~/types/video'
 import { VideoListContainer } from './VideoListContainer'
 
