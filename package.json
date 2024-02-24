@@ -4,7 +4,7 @@
 	"sideEffects": false,
 	"type": "module",
 	"scripts": {
-		"build-remix": "bunx prisma migrate deploy && remix build",
+		"build-remix": "prisma generate && bunx prisma migrate deploy && remix build",
 		"dev": "remix dev --manual",
 		"fmt:check": "bunx @biomejs/biome check --apply ./app",
 		"start": "remix-serve ./build/index.js",
