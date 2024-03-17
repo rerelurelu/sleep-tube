@@ -1,29 +1,30 @@
 {
-  "$schema": "https://biomejs.dev/schemas/1.5.3/schema.json",
-  "organizeImports": {
-    "enabled": true
-  },
-  "formatter": {
-    "enabled": true,
-    "lineWidth": 100,
-    "formatWithErrors": false
-  },
-  "linter": {
-    "enabled": true,
-    "rules": {
-      "recommended": true
-    }
-  },
-  "javascript": {
-    "formatter": {
-      "enabled": true,
-      "trailingComma": "all",
-      "quoteProperties": "asNeeded",
-      "semicolons": "asNeeded",
-      "quoteStyle": "single",
-      "jsxQuoteStyle": "single"
-    }
-  },
+	"$schema": "https://biomejs.dev/schemas/1.5.3/schema.json",
+	"organizeImports": {
+		"enabled": true
+	},
+	"formatter": {
+		"enabled": true,
+		"lineWidth": 100,
+		"formatWithErrors": false,
+		"indentStyle": "space"
+	},
+	"linter": {
+		"enabled": true,
+		"rules": {
+			"recommended": true
+		}
+	},
+	"javascript": {
+		"formatter": {
+			"enabled": true,
+			"trailingComma": "all",
+			"quoteProperties": "asNeeded",
+			"semicolons": "asNeeded",
+			"quoteStyle": "single",
+			"jsxQuoteStyle": "single"
+		}
+	},
 	"files": {
 		"ignore": ["./app/entry.server.tsx"]
 	}
