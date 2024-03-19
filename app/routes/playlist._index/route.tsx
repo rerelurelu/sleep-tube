@@ -1,9 +1,8 @@
-import { useAuth } from '@clerk/remix'
+import { UserButton, useAuth } from '@clerk/remix'
 import { getAuth } from '@clerk/remix/ssr.server'
 import { ActionFunction, LoaderFunction, MetaFunction, json, redirect } from '@remix-run/node'
 import { useFetcher, useLoaderData } from '@remix-run/react'
 import { useEffect, useRef } from 'react'
-import { SignOutButton } from '~/components/button/SignOutButton'
 import { addVideo, fetchVideos } from '~/models/video.server'
 import { Player } from '~/routes/playlist._index/components/Player'
 import { VideoList } from '~/routes/playlist._index/components/VideoList'
@@ -48,6 +47,7 @@ export default function Index() {
   const isAdding = fetcher.state !== 'idle'
   const formRef = useRef<HTMLFormElement>(null)
   const { userId } = useAuth()
+  const hasVideo = videos.length > 0
 
   useEffect(() => {
     if (!isAdding) {
@@ -55,13 +55,9 @@ export default function Index() {
     }
   }, [isAdding])
 
-  if (videos.length === 0) {
-    return <SignOutButton label='Sign out' />
-  }
-
   return (
     <>
-      <Player />
+      {hasVideo && <Player />}
       <div className='py-16 px-10 flex justify-between w-full'>
         <fetcher.Form
           ref={formRef}
@@ -89,7 +85,13 @@ export default function Index() {
             </div>
           )}
         </fetcher.Form>
-        <VideoList videos={videos} />
+        {hasVideo ? (
+          <VideoList videos={videos} />
+        ) : (
+          <div>
+            <UserButton afterSignOutUrl='/' />
+          </div>
+        )}
       </div>
     </>
   )
